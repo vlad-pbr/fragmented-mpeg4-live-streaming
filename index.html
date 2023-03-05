@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>Browser native streaming</title>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td>MPEG-4</td>
+                <td>MJPEG</td>
+            </tr>
+            <tr>
+                <td>
+                    <video id="video" src="http://localhost:20000/live/mpeg4" type="video/mp4" height="480" width="720" autoplay muted></video>
+                </td>
+                <td>
+                    <img src="http://localhost:20000/live/mjpeg" height="480" width="720">
+                </td>
+            </tr>
+        </table>
+        <div id="time"></div>
+        <script>
+
+            // store HTML elements
+            let video = document.getElementById("video")
+            let time = document.getElementById("time")
+
+            // dynamically update real tiem
+            setInterval(() => {
+                time.textContent = `Time: ${new Date().toLocaleString()}`
+            }, 1000)
+
+            video.play()
+        </script>
+    </body>
+</html>
