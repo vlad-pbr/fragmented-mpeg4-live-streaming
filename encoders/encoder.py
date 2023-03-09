@@ -3,7 +3,7 @@ from typing import Any, Generator
 
 class Encoder(ABC):
     """
-    Abstract encoder class with single 'encode' method.
+    Abstract encoder class for all encoding solution to derive from.
     """
 
     @abstractclassmethod
