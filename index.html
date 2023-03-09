@@ -16,6 +16,12 @@
                     <img src="http://localhost:20000/live/mjpeg" height="480" width="720">
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <span id="timediff"></span>
+                </td>
+                <td></td>
+            </tr>
         </table>
         <div id="time"></div>
         <script>
@@ -23,13 +29,25 @@
             // store HTML elements
             let video = document.getElementById("video")
             let time = document.getElementById("time")
+            let diff = document.getElementById("timediff")
 
-            // dynamically update real tiem
+            // dynamically update real time
             setInterval(() => {
                 time.textContent = `Time: ${new Date().toLocaleString()}`
-            }, 1000)
+                diff.textContent = `Buffer: ${video.duration - video.currentTime}`
+            }, 100)
 
-            video.play()
+            // rewind to latest data and play
+            video.onloadeddata = (ev) => {
+                video.currentTime = video.duration
+                video.play()
+            }
+
+            // dynamic playback rate for catching up with the buffer
+            video.ondurationchange = ev => {
+                video.playbackRate =  Math.min(Math.max(1.0 + (video.duration - video.currentTime), 1.0), 2.0)
+            }
+
         </script>
     </body>
 </html>

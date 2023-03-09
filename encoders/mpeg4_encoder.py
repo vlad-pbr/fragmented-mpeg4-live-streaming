@@ -4,6 +4,7 @@ from threading import Thread
 from time import sleep
 from typing import Any, Generator
 from encoders.encoder import Encoder
+from datetime import datetime, timedelta
 
 DESIRED_FPS: int = 60
 
@@ -14,10 +15,13 @@ class MPEG4Encoder(Encoder):
         "ffmpeg",
         "-r", f"{DESIRED_FPS}",
         "-i", "pipe:0",
-        "-g", "5",
+        "-g", "1",
         "-vf", "drawtext=text='%{localtime}':fontsize=48:fontcolor=white:box=1:boxborderw=6:boxcolor=black@0.75:x=(w-text_w)/2:y=h-text_h-20",
         "-vcodec", "libx264",
-        "-crf", "35",
+        "-tune", "zerolatency",
+        "-flush_packets", "1",
+        "-preset", "ultrafast",
+        "-crf", "25",
         "-an",
         "-f", "mp4",
         "-movflags", "frag_keyframe+empty_moov+faststart",
@@ -32,7 +36,7 @@ class MPEG4Encoder(Encoder):
     def encode(cls, input: Generator[bytes, Any, None]) -> Generator[bytes, Any, None]:
         
         # init frame queue
-        queue = Queue(maxsize=60)
+        queue = Queue(maxsize=DESIRED_FPS)
         complete = False
 
         # run encoder process
@@ -61,20 +65,23 @@ class MPEG4Encoder(Encoder):
         def _feed():
 
             frame: bytes = None
+            next_feed: datetime = datetime.now()
 
             try:
 
-                while True:
+                while not complete:
 
-                    # if frame in queue - switch to new frame
-                    if not queue.empty():
-                        frame = queue.get()
-                    
-                    # send frame to encoder
-                    if frame:
-                        encoder_process.stdin.write(frame)
+                    if datetime.now() > next_feed:
 
-                    sleep(1/DESIRED_FPS)
+                        # if frame in queue - switch to new frame
+                        if not queue.empty():
+                            frame = queue.get()
+                        
+                        # send frame to encoder
+                        if frame:
+                            encoder_process.stdin.write(frame)
+
+                        next_feed += timedelta(milliseconds=1000 / queue.maxsize)
 
             except BrokenPipeError:
                 pass
