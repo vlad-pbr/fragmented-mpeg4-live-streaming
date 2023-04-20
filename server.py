@@ -1,49 +1,14 @@
 #!/usr/bin/python3.8
 
-from time import sleep
-from typing import Any, Dict, Generator
+from typing import Any, Generator
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from uvicorn import run
-from os import listdir
 
 from encoders.encoder import Encoder
-from encoders.mjpeg_encoder import MJPEGEncoder
-from encoders.mpeg4_encoder import MPEG4Encoder
+from utils.streaming_utils import method_to_encoder, frame_stream
 
-ACTUAL_FPS = 60
-method_to_encoder: Dict[str, Encoder] = {
-    "mpeg4": MPEG4Encoder(),
-    "mjpeg": MJPEGEncoder()
-}
 app = FastAPI()
-
-def frame_stream() -> Generator[bytes, Any, None]:
-    """
-    Frame generator with variable framerate.
-    """
-
-    # get list of image names
-    images = sorted(listdir("./frames"))
-
-    # yield frames until generator is closed
-    try:
-
-        while True:
-
-            for image in images:
-
-                with open(f"./frames/{image}", "rb") as image_fd:
-
-                        # yield frame
-                        yield image_fd.read()
-
-                        # TODO varied fps
-                        sleep(1/ACTUAL_FPS)
-
-    except GeneratorExit:
-        pass
-
 
 @app.get("/live/{method}")
 async def live(method: str):
@@ -65,7 +30,7 @@ async def live(method: str):
     return StreamingResponse(stream, media_type=encoder.get_content_type(), background=_end_stream)
 
 def main():
-    run(app=app, host="0.0.0.0", port=20000)
+    run("server:app", host="0.0.0.0", port=20000, workers=10)
 
 if __name__ == "__main__":
     main()

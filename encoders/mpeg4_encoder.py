@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 
 DESIRED_FPS: int = 60
 
+FRAMES_PER_KEYFRAME: int = 1
+H264_CRF: int = 25
 
 class MPEG4Encoder(Encoder):
 
@@ -15,13 +17,13 @@ class MPEG4Encoder(Encoder):
         "ffmpeg",
         "-r", f"{DESIRED_FPS}",
         "-i", "pipe:0",
-        "-g", "1",
+        "-g", f"{FRAMES_PER_KEYFRAME}",
         "-vf", "drawtext=text='%{localtime}':fontsize=48:fontcolor=white:box=1:boxborderw=6:boxcolor=black@0.75:x=(w-text_w)/2:y=h-text_h-20",
         "-vcodec", "libx264",
         "-tune", "zerolatency",
         "-flush_packets", "1",
         "-preset", "ultrafast",
-        "-crf", "25",
+        "-crf", f"{H264_CRF}",
         "-an",
         "-f", "mp4",
         "-movflags", "frag_keyframe+empty_moov+faststart",
