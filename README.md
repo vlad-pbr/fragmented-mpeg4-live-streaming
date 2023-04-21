@@ -11,4 +11,10 @@ This repository showcases how fragmented MP4, format which is natively supported
 
 - Existing live streaming solutions and how fragmented MP4 streaming overcomes their main shortcoming - latency
 - Bandwidth and control as main advantages of fragmented MP4 over MJPEG
+- Optimizing client side code in order to keep up with the live edge
 - Overcoming the constant framerate limitation of MP4
+
+<div>
+    <img src="docs/visual.gif">
+    <img src="docs/metric.gif">
+</div>
