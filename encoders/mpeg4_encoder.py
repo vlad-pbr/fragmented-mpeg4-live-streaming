@@ -7,7 +7,6 @@ from encoders.encoder import Encoder
 from datetime import datetime, timedelta
 
 DESIRED_FPS: int = 60
-
 FRAMES_PER_KEYFRAME: int = 1
 H264_CRF: int = 25
 
