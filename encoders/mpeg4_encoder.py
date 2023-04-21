@@ -37,7 +37,6 @@ class MPEG4Encoder(Encoder):
     def encode(cls, input: Generator[bytes, Any, None]) -> Generator[bytes, Any, None]:
         
         # init frame queue
-        queue = Queue(maxsize=DESIRED_FPS)
         complete = False
 
         # run encoder process
@@ -48,47 +47,19 @@ class MPEG4Encoder(Encoder):
             stderr=DEVNULL
         )
 
-        def _enqueue():
+        def _feed():
 
             for frame in input:
 
-                # if queue is full - drop last frame
-                if queue.full():
-                    queue.get()
+                # feed new frame while completion flag is not set
+                if not complete:
+                    encoder_process.stdin.write(frame)
 
-                # enqueue new frame
-                queue.put(frame)
-
-                # iterating thread must properly close the generator
-                if complete:
+                # completion is set - iterating thread must close the interator
+                else:
                     input.close()
-
-        def _feed():
-
-            frame: bytes = None
-            next_feed: datetime = datetime.now()
-
-            try:
-
-                while not complete:
-
-                    if datetime.now() > next_feed:
-
-                        # if frame in queue - switch to new frame
-                        if not queue.empty():
-                            frame = queue.get()
-                        
-                        # send frame to encoder
-                        if frame:
-                            encoder_process.stdin.write(frame)
-
-                        next_feed += timedelta(milliseconds=1000 / queue.maxsize)
-
-            except BrokenPipeError:
-                pass
-
-        # start enqueueing and feeding threads
-        Thread(target=_enqueue).start()
+                    return
+                    
         Thread(target=_feed).start()
 
         # yield encoded frames until generator is closed
@@ -99,5 +70,5 @@ class MPEG4Encoder(Encoder):
             pass
 
         # cleanup
-        encoder_process.kill()
         complete = True
+        encoder_process.kill()
