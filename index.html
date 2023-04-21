@@ -34,7 +34,7 @@
             // dynamically update real time
             setInterval(() => {
                 time.textContent = `Time: ${new Date().toLocaleString()}`
-                diff.textContent = `Buffer: ${video.duration - video.currentTime}`
+                diff.textContent = `Buffer: ${video.duration - video.currentTime}s`
             }, 100)
 
             // rewind to latest data and play
@@ -44,8 +44,8 @@
             }
 
             // dynamic playback rate for catching up with the buffer
-            video.ondurationchange = ev => {
-                video.playbackRate =  Math.min(Math.max(1.0 + (video.duration - video.currentTime), 1.0), 2.0)
+            video.ondurationchange = (ev) => {
+                video.playbackRate =  Math.min(Math.max(0.5 + (video.duration - video.currentTime), 1.0), 2.0)
             }
 
         </script>
