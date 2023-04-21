@@ -15,6 +15,6 @@ This repository showcases how fragmented MP4, format which is natively supported
 - Overcoming the constant framerate limitation of MP4
 
 <div>
-    <img src="docs/visual.gif">
-    <img src="docs/metric.gif">
+    <img src="docs/visual.gif" width="100%" height="100%">
+    <img src="docs/metric.gif" width="100%" height="100%">
 </div>
