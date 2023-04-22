@@ -5,8 +5,8 @@
     <body>
         <table>
             <tr>
-                <td>MPEG-4</td>
-                <td>MJPEG</td>
+                <td><h1>MPEG-4</h1></td>
+                <td><h1>MJPEG</h1></td>
             </tr>
             <tr>
                 <td>
@@ -16,14 +16,11 @@
                     <img src="http://localhost:20000/live/mjpeg" height="480" width="720">
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <span id="timediff"></span>
-                </td>
-                <td></td>
-            </tr>
         </table>
-        <div id="time"></div>
+        <h1>
+            <div id="timediff"></div>
+            <div id="time"></div>
+        </h1>
         <script>
 
             // store HTML elements
@@ -34,7 +31,7 @@
             // dynamically update real time
             setInterval(() => {
                 time.textContent = `Time: ${new Date().toLocaleString()}`
-                diff.textContent = `Buffer: ${video.duration - video.currentTime}s`
+                diff.textContent = `Buffer: ${(video.duration - video.currentTime).toFixed(2)}s`
             }, 100)
 
             // rewind to latest data and play
