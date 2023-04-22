@@ -33,7 +33,7 @@ class MPEG4Encoder(Encoder):
     @classmethod
     def encode(cls, input: Generator[bytes, Any, None]) -> Generator[bytes, Any, None]:
         
-        # init frame queue
+        # init completion flag
         complete = False
 
         # run encoder process
