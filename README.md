@@ -3,7 +3,7 @@ Fragmented MP4 Live Streaming Solution
 
 * * *
 
-FastAPI + ffmpeg as a solution for natively supported live streaming in browsers. Made for my Medium article.
+FastAPI + ffmpeg as a solution for natively supported live streaming in browsers. Made for [my Medium article](https://medium.com/@vlad.pbr/in-browser-live-video-using-fragmented-mp4-3aedb600a07e).
 
 # Overview
 
